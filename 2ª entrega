@@ -1,0 +1,15 @@
+1) identificação da hierarquia de informações e agregações que fazem sentido para atender a principal funcionalidade do sistema
+
+1.	Hierarquia de informações:
+•	Coleção de Usuários: contém informações sobre os usuários cadastrados no PawMatch, incluindo dados de autenticação, contato, localização, etc.
+•	Coleção de Pets: contém informações sobre os pets cadastrados no PawMatch, incluindo perfil completo do animal, como raça, idade, sexo, localização, status vacinal, documentação, etc.
+•	Coleção de Curtidas (Swipes): registra as curtidas/passes dos usuários nos perfis dos pets.
+•	Coleção de Matches: registra os pares que se curtiram mutuamente.
+•	Coleção de Mensagens: registra o histórico de chat entre os donos após o match.
+
+2) descrição e exemplo de um documento de cada coleção do sistema
+•	Documento de Usuário: contém informações sobre um usuário específico, incluindo dados de autenticação, contato, localização, etc.
+•	Documento de Pet: contém informações sobre um pet específico, incluindo perfil completo do animal, como raça, idade, sexo, localização, status vacinal, documentação, etc.
+•	Documento de Curtida (Swipe): registra uma curtida/passe específica, incluindo informações sobre o usuário, pet e tipo de swipe (curtida ou passada).
+•	Documento de Match: registra um match específico, incluindo informações sobre os usuários e pets envolvidos.
+•	Documento de Mensagem: registra uma mensagem específica no histórico de chat entre os donos após o match.
