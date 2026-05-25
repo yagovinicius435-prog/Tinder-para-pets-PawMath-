@@ -1,0 +1,29 @@
+Descrição do Sistema PawMatch
+O PawMatch é uma plataforma de relacionamento e match voltada para o mundo pet (seja para fins de adoção, cruzamento ou socialização). O sistema foi projetado utilizando um banco de dados NoSQL orientado a documentos, priorizando a agregação de dados relacionados para garantir alta performance, leituras rápidas e consistência nas principais interações do aplicativo.
+
+Abaixo está o funcionamento do ecossistema mapeado em torno dos seus três pilares principais:
+
+1. Gestão de Tutores e seus Pets (USUÁRIO e BOX_PETS)
+O coração da plataforma gira em torno do tutor (Usuário). Para evitar consultas (queries) complexas e junções (joins) pesadas na hora de carregar o perfil de um usuário, o sistema adota a estratégia de incorporação (embedding):
+
+O Tutor: Armazena os dados cadastrais e de acesso direto, como nome, email, senha, telefone e a sua localizacao geográfica (essencial para filtrar matches próximos).
+
+Os Pets (Agregação): Cada usuário possui uma caixa interna chamada BOX_PETS. Trata-se de um array de subdocumentos que guarda todos os animais associados àquele tutor. Sempre que o perfil do usuário é carregado, o sistema já traz de imediato todas as informações dos seus pets (como nome, raca, idade e status_vacinal), agilizando a renderização da tela.
+
+2. A Dinâmica de Seleção (CURTIDA/SWIPE)
+Para conectar os pets, o sistema utiliza o clássico mecanismo de deslizar para o lado (swipes).
+
+Esta é uma coleção intermediária que funciona por referência, conectando o id_usuario (quem está avaliando) ao id_pet (o animal que está sendo avaliado).
+
+O documento registra o tipo_swipe (se foi uma curtida/like ou uma rejeição/dislike) e o timestamp exato da ação.
+
+3. Conexão e Comunicação (MATCH e CHAT COMPLETO)
+Quando há uma reciprocidade de interesse entre dois usuários/pets, o sistema gera um evento de MATCH. A arquitetura do chat foi desenhada para suportar conversas em tempo real com o mínimo de latência:
+
+O Match: O documento principal registra quais foram as partes envolvidas através de referências (id_pot1 e id_pot2) e a data em que a conexão aconteceu (data_match).
+
+O Chat (Agregação): Em vez de salvar cada mensagem em uma linha de tabela separada (como no modelo relacional tradicional), o PawMatch utiliza a agregação [CHAT COMPLETO]. O histórico inteiro da conversa é um array de subdocumentos (MENSAGEM) que vive dentro do próprio Match.
+
+Vantagem Prática: Quando os usuários abrem a tela de conversa, o aplicativo faz apenas uma única busca pelo ID do Match e puxa, de uma só vez, todas as mensagens ordenadas por timestamp, quem enviou (id_usuario_remetente) e o conteudo.
+
+🎯 Resumo da Abordagem: O PawMatch foi modelado para cenários onde a velocidade de leitura é crucial. Agregar os Pets nos seus donos e as Mensagens nos seus respectivos chats garante que o aplicativo funcione de forma fluida, sem gargalos de banco de dados mesmo com milhares de usuários gerando interações simultâneas.
