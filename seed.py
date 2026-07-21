@@ -43,40 +43,43 @@ def popular_banco():
 
     # Usuários que já curtiram o Patch
     usuarios_que_me_curtiram = [
-        {
-            "nome": "Ana Souza",
-            "email": "ana@email.com",
-            "pet": criar_pet(
-                "Luna",
-                "Shih-tzu",
-                2,
-                "Fêmea",
-                "https://images.unsplash.com/photo-1587300003388-59208cc962cb"
-            )
-        },
-        {
-            "nome": "Carlos Lima",
-            "email": "carlos@email.com",
-            "pet": criar_pet(
-                "Thor",
-                "Bulldog Francês",
-                4,
-                "Macho",
-                "https://images.unsplash.com/photo-1583511655826-05700442b31b"
-            )
-        },
-        {
-            "nome": "Marina Alves",
-            "email": "marina@email.com",
-            "pet": criar_pet(
-                "Mel",
-                "Poodle",
-                3,
-                "Fêmea",
-                "https://images.unsplash.com/photo-1517423440428-a5a00ad493e8"
-            )
-        }
-    ]
+    {
+        "nome": "Ana Souza",
+        "email": "ana@email.com",
+        "bio": "A Luna é muito brincalhona e adora fazer novas amizades para passeios no parque.",
+        "pet": criar_pet(
+            "Luna",
+            "Shih-tzu",
+            2,
+            "Fêmea",
+            "https://images.unsplash.com/photo-1587300003388-59208cc962cb"
+        )
+    },
+    {
+        "nome": "Carlos Lima",
+        "email": "carlos@email.com",
+        "bio": "O Thor é cheio de energia e procura um companheiro para brincar e correr todos os dias.",
+        "pet": criar_pet(
+            "Thor",
+            "Bulldog Francês",
+            4,
+            "Macho",
+            "https://images.pexels.com/photos/33501591/pexels-photo-33501591.jpeg"
+        )
+    },
+    {
+        "nome": "Marina Alves",
+        "email": "marina@email.com",
+        "bio": "A Mel é muito dócil. Estamos procurando novas amizades e, quem sabe, um futuro companheiro.",
+        "pet": criar_pet(
+            "Mel",
+            "Poodle",
+            3,
+            "Fêmea",
+            "https://images.unsplash.com/photo-1517423440428-a5a00ad493e8"
+        )
+    }
+]
 
     for item in usuarios_que_me_curtiram:
         tutor = {
@@ -85,7 +88,7 @@ def popular_banco():
             "senha": "123",
             "telefone": "34988888888",
             "cidade": "Uberlândia",
-            "bio": "Esse tutor já curtiu o Patch.",
+            "bio": item["bio"],
             "box_pets": [item["pet"]]
         }
 
@@ -105,6 +108,7 @@ def popular_banco():
         {
             "nome": "Rafael Dias",
             "email": "rafael@email.com",
+            "bio": "O Bob adora aventuras e está procurando novos amigos para brincar e passear.",
             "pet": criar_pet(
                 "Bob",
                 "Beagle",
@@ -116,6 +120,7 @@ def popular_banco():
         {
             "nome": "Bianca Rocha",
             "email": "bianca@email.com",
+            "bio": "A Nina é muito carinhosa e sociável. Procuramos um pet para amizade e muita diversão.",
             "pet": criar_pet(
                 "Nina",
                 "Spitz Alemão",
@@ -133,7 +138,7 @@ def popular_banco():
             "senha": "123",
             "telefone": "34977777777",
             "cidade": "Uberlândia",
-            "bio": "Perfil disponível para você avaliar na aba Explorar.",
+            "bio": item["bio"],
             "box_pets": [item["pet"]]
         })
 

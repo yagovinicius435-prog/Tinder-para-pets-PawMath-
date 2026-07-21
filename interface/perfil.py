@@ -1,7 +1,13 @@
 import streamlit as st
 from interface.utils import usuario_atual, logout
 from services.usuario_service import atualizar_usuario, excluir_usuario
-from services.pet_service import criar_pet, adicionar_pet, excluir_pet
+from services.redis_service import listar_historico
+from services.pet_service import (
+    criar_pet,
+    adicionar_pet,
+    excluir_pet,
+    buscar_detalhes_pet
+)
 
 def tela_perfil():
     usuario = usuario_atual()
@@ -79,6 +85,37 @@ def tela_perfil():
         st.rerun()
 
     st.divider()
+    
+    st.subheader("🕒 Últimos pets visualizados")
+
+    historico = listar_historico(str(usuario["_id"]))
+
+    if historico:
+
+        for id_pet in historico:
+
+            resultado = buscar_detalhes_pet(id_pet)
+
+            if resultado is None:
+                continue
+
+        pet = resultado["pet"]
+
+        st.markdown("---")
+
+        foto = pet.get("foto", "").strip()
+
+        if foto.startswith("http"):
+            st.image(foto, width=200)
+
+        st.write(f"**🐶 Nome:** {pet['nome']}")
+        st.write(f"**🐕 Raça:** {pet['raca']}")
+        st.write(f"**🎂 Idade:** {pet['idade']} anos")
+        st.write(f"**👤 Tutor:** {resultado['nome_tutor']}")
+        st.write(f"**📍 Cidade:** {resultado['cidade']}")
+
+    else:
+        st.info("Você ainda não visualizou nenhum pet.")
 
     if st.button("Sair"):
         logout()

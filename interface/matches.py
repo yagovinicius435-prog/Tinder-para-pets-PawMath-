@@ -22,6 +22,7 @@ def tela_matches():
             outro_pet_id = match["id_pet1"]
 
         tutor, pet = buscar_pet_por_id(outro_pet_id)
+        
 
         if not tutor or not pet:
             continue
@@ -29,8 +30,13 @@ def tela_matches():
         st.divider()
 
         st.markdown(f"## 🐾 Match com {pet['nome']}")
+
         st.write(f"**Tutor:** {tutor['nome']}")
         st.write(f"**Cidade:** {tutor['cidade']}")
+        st.write(f"**Idade:** {pet['idade']} anos")
+        st.write(f"**Sexo:** {pet['sexo']}")
+        st.write(f"**Vacinação:** {pet['status_vacinal']}")
+        st.write(f"**Bio:** {tutor.get('bio', tutor.get('biografia', 'Não informada'))}")
 
         foto = pet.get("foto", "").strip()
 

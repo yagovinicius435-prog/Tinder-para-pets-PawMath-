@@ -47,10 +47,68 @@ def buscar_pet_por_id(id_pet):
     return None, None
 
 def listar_pets_para_explorar(usuario_logado):
-    pets = []
 
-    for tutor in usuarios.find({"_id": {"$ne": usuario_logado["_id"]}}):
-        for pet in tutor.get("box_pets", []):
-            pets.append((tutor, pet))
+    pipeline = [
+        {
+            "$match": {
+                "_id": {
+                    "$ne": usuario_logado["_id"]
+                }
+            }
+        },
+        {
+            "$unwind": "$box_pets"
+        },
+        {
+            "$project": {
+                "_id": 0,
+                "id_usuario": "$_id",
+                "nome_tutor": "$nome",
+                "cidade": 1,
+                "bio": "$bio",
+                "nome": "$box_pets.nome",
+                "id_pet": "$box_pets.id_pet",
+                "raca": "$box_pets.raca",
+                "idade": "$box_pets.idade",
+                "sexo": "$box_pets.sexo",
+                "status_vacinal": "$box_pets.status_vacinal",
+                "documentacao": "$box_pets.documentacao",
+                "foto": "$box_pets.foto"
+            }
+        },
+        {
+            "$sample": {
+                "size": 20
+            }
+        }
+    ]
 
-    return pets
+    return list(usuarios.aggregate(pipeline))
+
+def buscar_detalhes_pet(id_pet):
+
+    pipeline = [
+        {
+            "$unwind": "$box_pets"
+        },
+        {
+            "$match": {
+                "box_pets.id_pet": id_pet
+            }
+        },
+        {
+            "$project": {
+                "_id": 0,
+                "nome_tutor": "$nome",
+                "cidade": "$cidade",
+                "pet": "$box_pets"
+            }
+        }
+    ]
+
+    resultado = list(usuarios.aggregate(pipeline))
+
+    if resultado:
+        return resultado[0]
+
+    return None

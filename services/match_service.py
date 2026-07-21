@@ -1,6 +1,8 @@
 from datetime import datetime
+from bson import ObjectId
 from db import swipes, matches
 from services.pet_service import buscar_pet_por_id
+
 
 def criar_match_se_reciproco(usuario_logado, pet_curtido):
     meu_pet = usuario_logado["box_pets"][0]
@@ -46,13 +48,73 @@ def criar_match_se_reciproco(usuario_logado, pet_curtido):
 
     return True
 
+
 def listar_matches_usuario(id_usuario):
-    return list(matches.find({
-        "$or": [
-            {"id_usuario1": str(id_usuario)},
-            {"id_usuario2": str(id_usuario)}
-        ]
-    }))
+
+    pipeline = [
+
+        {
+            "$match": {
+                "$or": [
+                    {"id_usuario1": str(id_usuario)},
+                    {"id_usuario2": str(id_usuario)}
+                ]
+            }
+        },
+
+        {
+            "$set": {
+                "usuario_lookup": {
+                    "$cond": [
+                        {"$eq": ["$id_usuario1", str(id_usuario)]},
+                        {"$toObjectId": "$id_usuario2"},
+                        {"$toObjectId": "$id_usuario1"}
+                    ]
+                }
+            }
+        },
+
+        {
+            "$lookup": {
+                "from": "usuários",
+                "localField": "usuario_lookup",
+                "foreignField": "_id",
+                "as": "tutor"
+            }
+        },
+
+        {
+            "$unwind": {
+                "path": "$tutor",
+                "preserveNullAndEmptyArrays": True
+            }
+        },
+
+        {
+            "$project": {
+                "_id": 1,
+                "id_usuario1": 1,
+                "id_usuario2": 1,
+                "id_pet1": 1,
+                "id_pet2": 1,
+                "data_match": 1,
+                "chat_completo": 1,
+                "nome_tutor": "$tutor.nome",
+                "cidade": "$tutor.cidade",
+                "bio": "$tutor.bio"
+            }
+        },
+
+        {
+            "$sort": {
+                "data_match": -1
+            }
+        }
+
+    ]
+
+    return list(matches.aggregate(pipeline))
+
 
 def desfazer_match(id_match):
     return matches.delete_one({"_id": id_match})
